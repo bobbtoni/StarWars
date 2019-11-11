@@ -53,6 +53,7 @@ public class MenuScreen extends BaseScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
+        logo.touchDown(touch, pointer);
         return false;
     }
 
