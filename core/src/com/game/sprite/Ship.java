@@ -1,5 +1,6 @@
 package com.game.sprite;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -11,9 +12,15 @@ public class Ship extends Sprite {
 
     private Vector2 vectorMove;
     private Vector2 vectorBuffer;
+    private TextureRegion normal_state, critical_state;
 
     public Ship(TextureAtlas atlas) {
         super(atlas.findRegion("main_ship"));
+        normal_state = atlas.findRegion("main_ship");
+        normal_state.setRegion( normal_state.getRegionX(),
+                                normal_state.getRegionY(),
+                         normal_state.getRegionWidth()/2,
+                                normal_state.getRegionHeight());
         vectorMove = new Vector2(pos);
         vectorBuffer = new Vector2();
     }

@@ -12,12 +12,16 @@ import com.game.math.Rect;
 import com.game.sprite.Background;
 import com.game.sprite.Logo;
 import com.game.sprite.Ship;
+import com.game.sprite.Star;
 
 public class GameScreen extends BaseScreen {
+
+    private static final int STAR_COUNT = 128;
 
     private Texture bg;
     private TextureAtlas atlas;
     private Ship mainShip;
+    private Star[] stars;
 
     private Background background;
 
@@ -28,6 +32,10 @@ public class GameScreen extends BaseScreen {
         background = new Background(new TextureRegion(bg));
         atlas = new TextureAtlas("textures/mainAtlas.tpack");
         mainShip = new Ship(atlas);
+        stars = new Star[STAR_COUNT];
+        for (int i = 0; i < STAR_COUNT; i++) {
+            stars[i] = new Star(atlas);
+        }
     }
 
     @Override
@@ -41,6 +49,9 @@ public class GameScreen extends BaseScreen {
     public void resize(Rect worldBounds) {
         background.resize(worldBounds);
         mainShip.resize(worldBounds);
+        for (Star star : stars) {
+            star.resize(worldBounds);
+        }
     }
 
     @Override
@@ -73,7 +84,9 @@ public class GameScreen extends BaseScreen {
     }
 
     private void update(float delta) {
-
+        for (Star star : stars) {
+            star.update(delta);
+        }
     }
 
     private void draw() {
@@ -82,6 +95,9 @@ public class GameScreen extends BaseScreen {
         batch.begin();
         background.draw(batch);
         mainShip.draw(batch);
+        for (Star star : stars) {
+            star.draw(batch);
+        }
         batch.end();
     }
 }
