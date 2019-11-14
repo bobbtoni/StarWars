@@ -1,19 +1,19 @@
 package com.game.sprite;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import com.badlogic.gdx.math.Vector2;
 import com.game.base.Sprite;
 import com.game.math.Rect;
 
-public class Logo extends Sprite {
+public class Ship extends Sprite {
 
     private Vector2 vectorMove;
     private Vector2 vectorBuffer;
 
-    public Logo(TextureRegion region) {
-        super(region);
+    public Ship(TextureAtlas atlas) {
+        super(atlas.findRegion("main_ship"));
         vectorMove = new Vector2(pos);
         vectorBuffer = new Vector2();
     }
@@ -35,6 +35,13 @@ public class Logo extends Sprite {
         vectorBuffer.set(vectorMove);
         pos.add(vectorBuffer.sub(pos).limit(0.03f));
         super.draw(batch);
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        setHeightProportion(0.15f);
+        setRight(worldBounds.getRight() - 0.05f);
+        setBottom(worldBounds.getBottom() + 0.05f);
     }
 
 }
