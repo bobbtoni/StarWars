@@ -7,48 +7,60 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.game.base.Sprite;
 import com.game.math.Rect;
+import com.game.pool.BulletPool;
 
 public class Ship extends Sprite {
 
-    private Vector2 vectorMove;
-    private Vector2 vectorBuffer;
-    private TextureRegion normal_state, critical_state;
+    private final Vector2 v = new Vector2(0, -0.1f);
+
+    private Rect worldBounds;
+    private BulletPool bulletPool;
+    private TextureRegion bulletRegion;
+    private Vector2 bulletV = new Vector2(0, -0.3f);
+
+    private final float reloadInterval = 0.7f;
+    private float reloadTimer = 0f;
 
     public Ship(TextureAtlas atlas) {
-        super(atlas.findRegion("main_ship"));
-        normal_state = atlas.findRegion("main_ship");
-        normal_state.setRegion( normal_state.getRegionX(),
-                                normal_state.getRegionY(),
-                         normal_state.getRegionWidth()/2,
-                                normal_state.getRegionHeight());
-        vectorMove = new Vector2(pos);
-        vectorBuffer = new Vector2();
+        super(atlas.findRegion("enemy0"), 1, 2, 2);
+        bulletRegion = atlas.findRegion("bulletEnemy");
+        setHeightProportion(0.1f);
+    }
+
+    public void set(
+            BulletPool bulletPool,
+            Vector2 pos,
+            Vector2 v,
+            int damage){
+        this.bulletPool = bulletPool;
+        this.pos.set(pos);
+        this.v.set(v);
+        setHeightProportion(0.1f);
+    }
+
+    public void setWorldBounds(Rect worldBounds) {
+        this.worldBounds = worldBounds;
     }
 
     @Override
-    public boolean touchUp(Vector2 touch, int pointer) {
-        return super.touchUp(touch, pointer);
+    public void update(float delta) {
+        reloadTimer += delta;
+        if (reloadTimer > reloadInterval) {
+            reloadTimer = 0f;
+            shoot();
+        }
+        pos.mulAdd(v, delta);
+        if (isOutside(worldBounds)) {
+            destroy();
+        }
     }
 
-    @Override
-    public boolean touchDown(Vector2 touch, int pointer) {
-        super.touchDown(touch, pointer);
-        vectorMove.set(touch);
-        return false;
+    private void stop() {
+        v.setZero();
     }
 
-    @Override
-    public void draw(SpriteBatch batch) {
-        vectorBuffer.set(vectorMove);
-        pos.add(vectorBuffer.sub(pos).limit(0.03f));
-        super.draw(batch);
+    private void shoot() {
+        Bullet bullet = bulletPool.obtain();
+        bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
     }
-
-    @Override
-    public void resize(Rect worldBounds) {
-        setHeightProportion(0.15f);
-        setRight(worldBounds.getRight() - 0.05f);
-        setBottom(worldBounds.getBottom() + 0.05f);
-    }
-
 }
