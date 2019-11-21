@@ -43,6 +43,7 @@ public class Enemy extends Ship {
         this.bulletV.set(0, bulletVY);
         this.damage = damage;
         this.reloadInterval = reloadInterval;
+        this.reloadTimer = this.reloadInterval;
         this.sound = sound;
         setHeightProportion(height);
         this.hp = hp;

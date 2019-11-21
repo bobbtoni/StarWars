@@ -35,12 +35,20 @@ public abstract class Ship extends Sprite {
 
     @Override
     public void update(float delta) {
-        reloadTimer += delta;
-        if (reloadTimer > reloadInterval) {
-            reloadTimer = 0f;
-            shoot();
+        if (getTop() > worldBounds.getTop()){
+            if (delta > getHeight()){
+                delta = 0; // на случай, если высота значительно меньше
+                            // чтобы не появилось рывка на центр экрана
+            }
+            pos.mulAdd(v, delta + getHeight());
+        } else {
+            reloadTimer += delta;
+            if (reloadTimer > reloadInterval) {
+                reloadTimer = 0f;
+                shoot();
+            }
+            pos.mulAdd(v, delta);
         }
-        pos.mulAdd(v, delta);
     }
 
     protected void shoot() {
